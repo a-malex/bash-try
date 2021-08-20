@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# this deafult values use when options not set in input and also we have no environment variable for them
+DEFAULT_INTERVAL=5
+DEFAULT_NUMBER=12
+
+# in this function we check input values and make our command with number of repeat and interval between repeats.
+run_loop() {
+    $1;
+    if [[ $? != "0" ]]; then
+        if [[ $NUMBER != "" ]]; then
+        i=0
+            while [[ i -lt $NUMBER ]]; do
+                $1;
+                if [[ $? != "0" ]]; then
+                    if [[ $INTERVAL != "" ]]; then
+                        sleep $INTERVAL;
+                    fi
+                    ((i++))
+                else
+                    exit 0
+                fi
+            done
+        fi
+        echo "An ERROR has occured!"    
+        exit 1;
+    fi
+}
+
+
+# check invironment values and set default values if needed
+INTERVAL="${TRY_INTERVAL:- $DEFAULT_INTERVAL}"
+NUMBER="${TRY_NUMBER:- $DEFAULT_NUMBER}"
+
+# get input options and set main variables
+while getopts "i:n:" option; do
+    case $option in
+        i)
+            INTERVAL="$OPTARG"
+            ;;
+        n)
+            NUMBER="$OPTARG"
+            ;;
+        \?)
+            echo -e "ERROR! invalid option.\njust i and n accepted."
+            exit 1
+            ;;
+    esac
+done
+
+# use shift to pass input options and use only command data
+shift $((OPTIND -1))
+
+# make command by all of the options and etc.
+COMMAND=$*
+
+# make error for no command situation
+if [[ $COMMAND != "" ]]; then
+    run_loop "$COMMAND"
+else
+    echo "No command to execute."
+    exit 1
+fi
