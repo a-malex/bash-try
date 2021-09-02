@@ -32,4 +32,8 @@ TRY_INTERVAL
 - `./try flask app test`
 - `./try -n 5 -i 2 flask app test`
 
+## How to contribute:
+All contributes are welcomed. If you find any bugs, please file an issue.
+
+
 [@dwsclass](https://github.com/dwsclass) dws-dev-006-bash
